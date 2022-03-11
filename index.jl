@@ -11,6 +11,9 @@ begin
 	using HypertextLiteral, JSONTables
 end
 
+# ╔═╡ 3d643e75-b078-4b8b-afc5-b321de8e4868
+@htl("""<script src="https://d3js.org/d3.v6.js"></script>""")
+
 # ╔═╡ 8b3681b9-8a63-4168-a1f1-04444b24a8bf
 md"# O’BLOC 🧗‍♀️
 This notebook is used to analyse scrape data of the [O'BLOC Website](https://obloc.ch). 
@@ -80,6 +83,75 @@ begin
 	rename!(dfMeanWeeks, [:dayofweek, :value_mean] .=>  ["Day of Week", "ø %Occupancy"])
 end
 
+# ╔═╡ d3631006-c877-4241-8fbb-8b6c3ba0df9d
+md"### What is the best time to go climbing?"
+
+# ╔═╡ a6666bdf-8096-4895-a46d-2b68986482fe
+begin
+	groupedByHour = combine(groupby(df, :hour), :value => mean, renamecols=false)
+	function generateBestTimeBarChart()
+		data = arraytable(groupedByHour)
+		@htl("""
+		<script>
+			const width = 600;
+			const height = 400;
+			const m = {left: 40, top: 40, right: 40, bottom: 40};
+
+			const graphWidth = width - m.left - m.right;
+			const graphHeight = height - m.top - m.bottom;
+		
+			const data = JSON.parse($(data));
+			
+			const svg = DOM.svg(width, height);
+
+			const xScale = d3.scaleBand()
+				.range([0, graphWidth])
+				.domain(data.map(d => d.hour))
+				.padding(0.05);
+
+			const yScale = d3.scaleLinear()
+				.range([graphHeight, 0])
+				.domain([0, 1])
+
+			d3.select(svg)
+				.append("g")
+				.attr("transform", `translate(\${m.left},\${m.top})`)
+  				.call(d3.axisLeft(yScale));
+
+			d3.select(svg)
+				.append("g")
+				.attr("transform", `translate(\${m.left},\${graphHeight+m.top})`)
+  				.call(d3.axisBottom(xScale));
+
+			d3.select(svg)
+				.append("g")
+				.attr("transform", `translate(\${m.left},\${m.top})`) 
+				.selectAll("rect")
+				.data(data, (d) => d)
+				.join("rect")
+	      		.attr("x", (d) => xScale(d.hour))
+	      		.attr("y", (d) => yScale(d.value))
+	      		.attr("width", xScale.bandwidth())
+	      		.attr("height", (d) => graphHeight - yScale(d.value))
+				.attr("fill", "#006446");
+		
+			return svg;
+		</script>
+		""")
+	end
+	generateBestTimeBarChart()
+end
+
+# ╔═╡ 52813bc0-29b9-4494-a9a2-6437da451897
+begin
+	function topHour()
+		x = sort(groupedByHour, [:value])
+		x.value = x.value * 100
+		x
+	end
+	topHour()
+end
+
 # ╔═╡ 7b498d91-63ed-4a70-b4d4-bdcc21ceacd4
 md"### Heatmap Year
 This heatmap shows the mean occupancy per calendar week and day.
@@ -96,7 +168,6 @@ begin
 		data.day = Dates.dayofweek.(data.date)
 		data = arraytable(data)
 		@htl("""
-		<script src="https://d3js.org/d3.v6.js"></script>
 		<script>
 	
 			const margins = {left: 40, top: 0, right: 20, bottom: 140};
@@ -229,7 +300,7 @@ CSV = "~0.10.3"
 DataFrames = "~1.3.2"
 HypertextLiteral = "~0.9.3"
 JSONTables = "~1.0.3"
-Plots = "~1.26.0"
+Plots = "~1.26.1"
 StatsPlots = "~0.14.33"
 TimeZones = "~1.7.2"
 """
@@ -665,9 +736,9 @@ version = "0.21.3"
 
 [[deps.JSON3]]
 deps = ["Dates", "Mmap", "Parsers", "StructTypes", "UUIDs"]
-git-tree-sha1 = "175b6ff26cd0fa01dd60021ce76bbdefdf91e4a0"
+git-tree-sha1 = "8c1f668b24d999fb47baf80436194fdccec65ad2"
 uuid = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
-version = "1.9.3"
+version = "1.9.4"
 
 [[deps.JSONTables]]
 deps = ["JSON3", "StructTypes", "Tables"]
@@ -958,10 +1029,10 @@ uuid = "995b91a9-d308-5afd-9ec6-746e21dbc043"
 version = "1.1.3"
 
 [[deps.Plots]]
-deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers", "GR", "GeometryBasics", "JSON", "Latexify", "LinearAlgebra", "Measures", "NaNMath", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "RecipesPipeline", "Reexport", "Requires", "Scratch", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs", "UnicodeFun", "Unzip"]
-git-tree-sha1 = "23d109aad5d225e945c813c6ebef79104beda955"
+deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers", "GR", "GeometryBasics", "JSON", "Latexify", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "RecipesPipeline", "Reexport", "Requires", "Scratch", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs", "UnicodeFun", "Unzip"]
+git-tree-sha1 = "2f041202ab4e47f4a3465e3993929538ea71bd48"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "1.26.0"
+version = "1.26.1"
 
 [[deps.PooledArrays]]
 deps = ["DataAPI", "Future"]
@@ -971,9 +1042,9 @@ version = "1.4.0"
 
 [[deps.Preferences]]
 deps = ["TOML"]
-git-tree-sha1 = "de893592a221142f3db370f48290e3a2ef39998f"
+git-tree-sha1 = "d3538e7f8a790dc8903519090857ef8e1283eecd"
 uuid = "21216c6a-2e73-6563-6e65-726566657250"
-version = "1.2.4"
+version = "1.2.5"
 
 [[deps.PrettyTables]]
 deps = ["Crayons", "Formatting", "Markdown", "Reexport", "Tables"]
@@ -1448,6 +1519,7 @@ version = "0.9.1+5"
 
 # ╔═╡ Cell order:
 # ╟─f42eb779-f2f2-43d7-996f-97ba181399f4
+# ╟─3d643e75-b078-4b8b-afc5-b321de8e4868
 # ╟─8b3681b9-8a63-4168-a1f1-04444b24a8bf
 # ╟─05a8266a-e30e-4e6f-bbd5-3d5c8114fca6
 # ╟─5fa2251f-9aec-424b-b0fe-48ad15d74b7a
@@ -1456,6 +1528,9 @@ version = "0.9.1+5"
 # ╟─2f412aa6-ab67-4ff8-8bf1-5282545ea012
 # ╟─24221234-bc42-4da0-a5bd-146aaa8791b8
 # ╟─fddf3b84-98e3-4571-bf47-611db0003679
+# ╟─d3631006-c877-4241-8fbb-8b6c3ba0df9d
+# ╟─a6666bdf-8096-4895-a46d-2b68986482fe
+# ╟─52813bc0-29b9-4494-a9a2-6437da451897
 # ╟─7b498d91-63ed-4a70-b4d4-bdcc21ceacd4
 # ╟─06df7a66-81d9-4673-9902-b873e3a4fe2b
 # ╟─ae48bc41-89fc-4f71-bd91-2e93c9c673eb
