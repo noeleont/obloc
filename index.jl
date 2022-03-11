@@ -10,9 +10,6 @@ begin
 	using HypertextLiteral, JSONTables
 end
 
-# ╔═╡ 3d643e75-b078-4b8b-afc5-b321de8e4868
-@htl("""<script src="https://d3js.org/d3.v6.js"></script>""")
-
 # ╔═╡ 8b3681b9-8a63-4168-a1f1-04444b24a8bf
 md"# O’BLOC 🧗‍♀️
 This notebook is used to analyse scrape data of the [O'BLOC Website](https://obloc.ch). 
@@ -91,6 +88,7 @@ begin
 	function generateBestTimeBarChart()
 		data = arraytable(groupedByHour)
 		@htl("""
+		<script src="https://d3js.org/d3.v6.js"></script>
 		<script>
 			const width = 600;
 			const height = 400;
@@ -167,6 +165,7 @@ begin
 		data.day = Dates.dayofweek.(data.date)
 		data = arraytable(data)
 		@htl("""
+		<script src="https://d3js.org/d3.v6.js"></script>
 		<script>
 	
 			const margins = {left: 40, top: 0, right: 20, bottom: 140};
@@ -276,9 +275,12 @@ begin
 end
 
 # ╔═╡ ae48bc41-89fc-4f71-bd91-2e93c9c673eb
-# This cell is mainly used to display when the static html was generated.
-# It has no meaning when this notebook is used interactively. 😂
-md"*Generated at $(Dates.now())*"
+begin
+	# This cell is mainly used to display when the static html was generated.
+	# It has no meaning when this notebook is used interactively. 😂
+	generatedtimestap = now(tz"UTC+1")
+	md"*Generated at $(generatedtimestap)*"
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -658,7 +660,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 
 # ╔═╡ Cell order:
 # ╟─f42eb779-f2f2-43d7-996f-97ba181399f4
-# ╟─3d643e75-b078-4b8b-afc5-b321de8e4868
 # ╟─8b3681b9-8a63-4168-a1f1-04444b24a8bf
 # ╟─05a8266a-e30e-4e6f-bbd5-3d5c8114fca6
 # ╟─5fa2251f-9aec-424b-b0fe-48ad15d74b7a
