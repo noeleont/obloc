@@ -81,81 +81,128 @@ begin
 end
 
 # ╔═╡ 7b498d91-63ed-4a70-b4d4-bdcc21ceacd4
-md"### 🚧 Heatmap 🚧
-> This heatmap is a work in progress.
+md"### Heatmap Year
+This heatmap shows the mean occupancy per calendar week and day.
+
+Sadly I started scraping in calendar week 5😢
 "
 
 # ╔═╡ 06df7a66-81d9-4673-9902-b873e3a4fe2b
 begin
-	data = combine(groupby(df, :date), :value=>mean, renamecols=false)
-	data.week = Dates.week.(data.date)
-	data.day = Dates.dayofweek.(data.date)
-	data = arraytable(data)
-	@htl("""
-	<script src="https://d3js.org/d3.v6.js"></script>
-	<script>
-
-		const margins = {left: 40, top: 0, right: 20, bottom: 40};
-		const data = JSON.parse($(data));
-
-		const weeks = d3.range(d3.min(data.map(d=>d.week)), d3.max(data.map(d=>d.week))+1);
-		const days = d3.range(1, 8);
-
-		const DAYNAMES = ["Mo", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+	# Here be Dragons!
+	function generateHeatmapYear()
+		data = combine(groupby(df, :date), :value=>mean, renamecols=false)
+		data.week = Dates.week.(data.date)
+		data.day = Dates.dayofweek.(data.date)
+		data = arraytable(data)
+		@htl("""
+		<script src="https://d3js.org/d3.v6.js"></script>
+		<script>
 	
-		const width = 600;
-		const height = 600;
-		const svg = DOM.svg(width, height);
+			const margins = {left: 40, top: 0, right: 20, bottom: 140};
+			const data = JSON.parse($(data));
 	
-		const xScale = d3.scaleBand()
-  			.range([ 0, width - margins.left - margins.right ])
-			.domain(weeks)
-			.paddingInner(0.05);
-
-		const yScale = d3.scaleBand()
-			.range([ 0, height - margins.top - margins.bottom ])
-  			.domain(days)
-			.paddingInner(0.04);
-
-		const dayScale = d3.scaleBand()
-			.range([ 0, height - margins.top - margins.bottom ])
-  			.domain(DAYNAMES)
-			.paddingInner(0.04);
-
-		const color = d3.scaleLinear()
-    	.domain([d3.min(data.map(d => d.value)), d3.max(data.map(d => d.value))])
-    	.range(["#e5f5e0", "#31a354"]);
-
-		d3.select(svg)
-  			.append("g")
-			.style("font-size", 14)
-			.attr("transform", `translate(\${margins.left-0.04}, 0)`) 
-  			.call(d3.axisLeft(dayScale).tickSize(0))
-			.select(".domain").remove();
-
-		d3.select(svg)
-  			.append("g")
-			.style("font-size", 14)
-			.attr("transform", `translate(\${margins.left},\${height-margins.bottom})`) 
-  			.call(d3.axisBottom(xScale).tickSize(0))
-			.select(".domain").remove();
+			const weeks = d3.range(d3.min(data.map(d=>d.week)), d3.max(data.map(d=>d.week))+1);
+			const days = d3.range(1, 8);
 	
-		d3.select(svg)
-			.append("g")
-			.attr("transform", `translate(\${margins.left},\${margins.top})`) 
-			.selectAll("rect")
-			.data(data, (d) => d)
-			.join("rect")
-      		.attr("x", (d) => xScale(d.week))
-      		.attr("y", (d) => yScale(d.day))
-			.attr("rx", 4)
-      		.attr("ry", 4)
-      		.attr("width", xScale.bandwidth())
-      		.attr("height", yScale.bandwidth())
-			.attr("fill", (d) => color(d.value));
-		return svg;
-	</script>
-	""")
+			const DAYNAMES = ["Mo", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+		
+			const width = 1800;
+			const height = 400;
+			const svg = DOM.svg(width, height);
+		
+			const xScale = d3.scaleBand()
+	  			.range([ 0, width - margins.left - margins.right ])
+				.domain(d3.range(d3.min(data.map(d=>d.week)), 53))
+				.paddingInner(0.05);
+	
+			const yScale = d3.scaleBand()
+				.range([ 0, height - margins.top - margins.bottom ])
+	  			.domain(days)
+				.paddingInner(0.04);
+	
+			const dayScale = d3.scaleBand()
+				.range([ 0, height - margins.top - margins.bottom ])
+	  			.domain(DAYNAMES)
+				.paddingInner(0.04);
+	
+			const color = d3.scaleLinear()
+	    	.domain([0, d3.max(data.map(d => d.value))])
+	    	.range(["#e5f5e0", "#31a354"]);
+	
+			d3.select(svg)
+	  			.append("g")
+				.style("font-size", 14)
+				.attr("transform", `translate(\${margins.left-0.04}, 0)`) 
+	  			.call(d3.axisLeft(dayScale).tickSize(0))
+				.select(".domain").remove();
+	
+			d3.select(svg)
+	  			.append("g")
+				.style("font-size", 14)
+				.attr("transform", `translate(\${margins.left},\${height-margins.bottom})`) 
+	  			.call(d3.axisBottom(xScale).tickSize(0))
+				.select(".domain").remove();
+		
+			d3.select(svg)
+				.append("g")
+				.attr("transform", `translate(\${margins.left},\${margins.top})`) 
+				.selectAll("rect")
+				.data(data, (d) => d)
+				.join("rect")
+	      		.attr("x", (d) => xScale(d.week))
+	      		.attr("y", (d) => yScale(d.day))
+				.attr("rx", 4)
+	      		.attr("ry", 4)
+	      		.attr("width", xScale.bandwidth())
+	      		.attr("height", yScale.bandwidth())
+				.attr("fill", (d) => color(d.value));
+
+			const gradient = DOM.uid();
+		
+			const grad = d3.select(svg)
+				.append("linearGradient")
+      			.attr("id", gradient.id)
+      			.attr("x1", "0%")
+    			.attr("y1", "0%")
+    			.attr("x2", "100%")
+    			.attr("y2", "0%");
+		
+			grad.append("stop")
+					.attr("offset", "0%")
+					.attr("stop-color", color(0));
+
+			grad.append("stop")
+					.attr("offset", "100%")
+					.attr("stop-color", color(d3.max(data.map(d => d.value))));
+		
+			const legend = d3.select(svg)
+				.append("g")
+				.attr("transform", `translate(\${margins.left},\${height-margins.bottom + 1.5*yScale.bandwidth()})`)
+				.style("font-size", 14);
+		
+			legend.append("text")
+				.attr("x", "0")
+				.attr("alignment-baseline", "middle")
+				.text("Less");
+		
+			legend.append("rect")
+				.attr("x", "30")
+				.attr("y", "-10")
+  				.attr("width", 100)
+  				.attr("height", 20)
+				.attr("fill", gradient);
+		
+			legend.append("text")
+				.attr("x", "137")
+				.attr("alignment-baseline", "middle")
+				.text("More");
+		
+			return svg;
+		</script>
+		""")
+	end
+	generateHeatmapYear()
 end
 
 # ╔═╡ ae48bc41-89fc-4f71-bd91-2e93c9c673eb
