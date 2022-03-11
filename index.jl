@@ -15,7 +15,7 @@ end
 md"# O’BLOC 🧗‍♀️
 This notebook is used to analyse scrape data of the [O'BLOC Website](https://obloc.ch). 
 
-O'BLOC is a great climbing gym! If you are visiting Bern consider visiting them 😊"
+O'BLOC is a great climbing gym! If you are in Bern consider visiting them 😊"
 
 
 # ╔═╡ 05a8266a-e30e-4e6f-bbd5-3d5c8114fca6
