@@ -25,7 +25,7 @@ md"## DataFrame"
 url = "https://raw.githubusercontent.com/ioboi/obloc-data/main/visitors.csv"
 
 # ╔═╡ cc4c8310-5004-42fe-9cbb-0f33e7b034dd
-md"This is the [source]($(url)) of the data."
+Markdown.parse("This is the [source]($(url)) of the data.")
 
 # ╔═╡ eb448f9c-add8-4c8f-b850-0bac4881c6f2
 begin
