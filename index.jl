@@ -88,8 +88,8 @@ begin
 	function generateBestTimeBarChart()
 		data = arraytable(groupedByHour)
 		@htl("""
-		<script src="https://d3js.org/d3.v6.js"></script>
 		<script>
+			const d3 = await import("https://cdn.skypack.dev/d3@7");
 			const width = 600;
 			const height = 400;
 			const m = {left: 40, top: 40, right: 40, bottom: 40};
@@ -165,9 +165,8 @@ begin
 		data.day = Dates.dayofweek.(data.date)
 		data = arraytable(data)
 		@htl("""
-		<script src="https://d3js.org/d3.v6.js"></script>
 		<script>
-	
+			const d3 = await import("https://cdn.skypack.dev/d3@7");
 			const margins = {left: 40, top: 0, right: 20, bottom: 140};
 			const data = JSON.parse($(data));
 	
