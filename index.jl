@@ -276,9 +276,12 @@ begin
 end
 
 # ╔═╡ ae48bc41-89fc-4f71-bd91-2e93c9c673eb
-# This cell is mainly used to display when the static html was generated.
-# It has no meaning when this notebook is used interactively. 😂
-md"*Generated at $(Dates.now())*"
+begin
+	# This cell is mainly used to display when the static html was generated.
+	# It has no meaning when this notebook is used interactively. 😂
+	generatedtimestap = now(tz"UTC+1")
+	md"*Generated at $(generatedtimestap)*"
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
