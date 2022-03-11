@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - main
-      - master
+    paths:
+      - .github/workflows/ExportPluto.yml
+      - ./index.jl
   workflow_dispatch: {}
   schedule:
     - cron: "0 7-23 * * *"
