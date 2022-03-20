@@ -11,7 +11,7 @@ begin
 end
 
 # ╔═╡ 8b3681b9-8a63-4168-a1f1-04444b24a8bf
-md"# O’BLOC 🧗‍♀️
+md"# 🧗‍♀️ O’BLOC 
 This notebook is used to analyse scrape data of the [O'BLOC Website](https://obloc.ch). 
 
 O'BLOC is a great climbing gym! If you are in Bern consider visiting them 😊"
