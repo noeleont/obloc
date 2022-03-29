@@ -175,7 +175,7 @@ begin
 	
 			const DAYNAMES = ["Mo", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 		
-			const width = 1800;
+			const width = 600;
 			const height = 400;
 			const svg = DOM.svg(width, height);
 		
