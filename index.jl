@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.18.1
+# v0.18.4
 
 using Markdown
 using InteractiveUtils
@@ -181,7 +181,7 @@ begin
 		
 			const xScale = d3.scaleBand()
 	  			.range([ 0, width - margins.left - margins.right ])
-				.domain(d3.range(d3.min(data.map(d=>d.week)), 53))
+				.domain(weeks)
 				.paddingInner(0.05);
 	
 			const yScale = d3.scaleBand()
@@ -671,7 +671,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─a6666bdf-8096-4895-a46d-2b68986482fe
 # ╟─52813bc0-29b9-4494-a9a2-6437da451897
 # ╟─7b498d91-63ed-4a70-b4d4-bdcc21ceacd4
-# ╟─06df7a66-81d9-4673-9902-b873e3a4fe2b
+# ╠═06df7a66-81d9-4673-9902-b873e3a4fe2b
 # ╟─ae48bc41-89fc-4f71-bd91-2e93c9c673eb
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
